@@ -8,8 +8,6 @@ import Image from 'next/image'
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient()
   
-  const { data: { user } } = await supabase.auth.getUser()
-  
   const { data: questions } = await supabase
     .from('questions')
     .select(`
@@ -46,6 +44,7 @@ export default async function HomePage() {
     .order('name')
   
   const categoryImages: Record<string, string> = {
+    'Pregnancy': '/images/pregnancy.jpg',
     'Sleep': '/images/sleep.jpg',
     'Feeding': '/images/feeding.jpg',
     'Development': '/images/development.jpg',
@@ -55,6 +54,7 @@ export default async function HomePage() {
   }
   
   const categoryLabels: Record<string, string> = {
+    'Pregnancy': 'Pregnancy &\nFertility',
     'Sleep': 'Sleep & Routines',
     'Feeding': 'Feeding & Nutrition',
     'Development': 'Development',
@@ -63,15 +63,12 @@ export default async function HomePage() {
     'Activities': 'General Parenting'
   }
   
-  const allCategories = [
-    { id: 'pregnancy', name: 'Pregnancy', image: '/images/pregnancy.jpg', label: 'Pregnancy &\nFertility' },
-    ...(topics || []).map(t => ({
-      id: t.id,
-      name: t.name,
-      image: categoryImages[t.name] || '/images/activities.jpg',
-      label: categoryLabels[t.name] || t.name
-    }))
-  ]
+  const allCategories = (topics || []).map(t => ({
+    id: t.id,
+    name: t.name,
+    image: categoryImages[t.name] || '/images/activities.jpg',
+    label: categoryLabels[t.name] || t.name
+  }))
   
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(to bottom, #FBF8F3 0%, #E8F4F8 100%)' }}>
@@ -121,9 +118,9 @@ export default async function HomePage() {
           Explore Categories
         </h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          {allCategories.slice(0, 6).map((category) => (
-            <Link key={category.id} href={category.id === 'pregnancy' ? '/topics' : `/topics/${category.id}`}>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
+          {allCategories.slice(0, 7).map((category) => (
+            <Link key={category.id} href={`/topics/${category.id}`}>
               <div className="bg-white rounded-2xl p-6 text-center hover:shadow-xl transition-all border border-gray-100 cursor-pointer">
                 <div className="w-24 h-24 mx-auto mb-4 relative">
                   <Image 
