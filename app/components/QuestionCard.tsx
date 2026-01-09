@@ -24,53 +24,73 @@ interface QuestionCardProps {
 
 export function QuestionCard({ question }: QuestionCardProps) {
   return (
-    <Card className="p-6 hover:shadow-md transition-shadow">
-      <div className="flex items-start space-x-4">
-        <Link href={`/profile/${question.users.id}`} className="cursor-pointer">
-          <Avatar 
-            name={question.users.name} 
-            src={question.users.avatar_url} 
-            size="md"
-          />
-        </Link>
-        
-        <div className="flex-1 min-w-0">
-          <Link href={`/questions/${question.id}`}>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary-600 cursor-pointer">
-              {question.title}
-            </h3>
-          </Link>
-          <p className="text-gray-600 line-clamp-2 mb-3">
+    <Card className="p-4 sm:p-6 hover:shadow-md transition-shadow">
+      <Link href={`/questions/${question.id}`}>
+        <div className="space-y-3">
+          {/* Title */}
+          <h3 className="text-lg sm:text-xl font-bold text-gray-900 hover:text-primary-600 transition-colors line-clamp-2">
+            {question.title}
+          </h3>
+          
+          {/* Content Preview */}
+          <p className="text-sm sm:text-base text-gray-600 line-clamp-2">
             {question.content}
           </p>
           
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
-            <Link href={`/profile/${question.users.id}`} className="font-medium hover:text-primary-600 cursor-pointer">
-              {question.users.name}
+          {/* Topic Badge */}
+          {question.topics && (
+            <div>
+              <span 
+                className="inline-block px-3 py-1 rounded-full text-xs sm:text-sm font-semibold"
+                style={{ backgroundColor: '#B8E6E1', color: '#1E5F5E' }}
+              >
+                {question.topics.name}
+              </span>
+            </div>
+          )}
+          
+          {/* Bottom Row - User Info & Stats */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-2 border-t border-gray-100">
+            {/* User Info */}
+            <Link 
+              href={`/profile/${question.users.id}`} 
+              className="flex items-center space-x-2 hover:opacity-80"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Avatar 
+                name={question.users.name} 
+                src={question.users.avatar_url} 
+                size="sm"
+              />
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 min-w-0">
+                <span className="font-medium text-gray-900 text-sm truncate">
+                  {question.users.name}
+                </span>
+                <span className="hidden sm:inline text-gray-400">•</span>
+                <span className="text-xs sm:text-sm text-gray-500">
+                  {formatDate(question.created_at)}
+                </span>
+              </div>
             </Link>
-            <span>•</span>
-            <span>{formatDate(question.created_at)}</span>
-            {question.topics && (
-              <>
-                <span>•</span>
-                <span className="text-primary-600">{question.topics.name}</span>
-              </>
-            )}
-            {question.upvote_count !== undefined && (
-              <>
-                <span>•</span>
-                <span>{question.upvote_count} upvotes</span>
-              </>
-            )}
-            {question.answer_count !== undefined && (
-              <>
-                <span>•</span>
-                <span>{question.answer_count} answers</span>
-              </>
-            )}
+            
+            {/* Stats */}
+            <div className="flex items-center space-x-4 text-sm">
+              {question.upvote_count !== undefined && (
+                <div className="flex items-center space-x-1 text-gray-600">
+                  <span className="text-orange-500">❤️</span>
+                  <span className="font-semibold">{question.upvote_count}</span>
+                </div>
+              )}
+              {question.answer_count !== undefined && (
+                <div className="flex items-center space-x-1 text-gray-600">
+                  <span>💬</span>
+                  <span className="font-semibold">{question.answer_count}</span>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     </Card>
   )
 }
