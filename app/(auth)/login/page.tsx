@@ -1,5 +1,4 @@
 import { Card } from '@/app/components/ui/Card'
-import { Button } from '@/app/components/ui/Button'
 import { signIn } from '@/app/actions/auth'
 import Link from 'next/link'
 
@@ -37,10 +36,20 @@ export default function LoginPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
             />
           </div>
+
+          <div className="flex items-center justify-between">
+            <Link href="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700">
+              Forgot password?
+            </Link>
+          </div>
           
-          <Button type="submit" className="w-full">
+          <button 
+            type="submit"
+            className="w-full text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+            style={{ backgroundColor: '#E86A33' }}
+          >
             Log In
-          </Button>
+          </button>
         </form>
         
         <p className="text-center text-gray-600 mt-4">

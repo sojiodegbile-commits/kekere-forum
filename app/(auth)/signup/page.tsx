@@ -1,5 +1,4 @@
 import { Card } from '@/app/components/ui/Card'
-import { Button } from '@/app/components/ui/Button'
 import { signUp } from '@/app/actions/auth'
 import Link from 'next/link'
 
@@ -52,9 +51,13 @@ export default function SignupPage() {
             />
           </div>
           
-          <Button type="submit" className="w-full">
+          <button 
+            type="submit"
+            className="w-full text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+            style={{ backgroundColor: '#E86A33' }}
+          >
             Sign Up
-          </Button>
+          </button>
         </form>
         
         <p className="text-center text-gray-600 mt-4">
