@@ -1,8 +1,53 @@
+'use client'
+
+import { useState } from 'react'
 import { Card } from '@/app/components/ui/Card'
 import { signUp } from '@/app/actions/auth'
 import Link from 'next/link'
 
 export default function SignupPage() {
+  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [email, setEmail] = useState('')
+  const [error, setError] = useState('')
+
+  async function handleSubmit(formData: FormData) {
+    const emailValue = formData.get('email') as string
+    setEmail(emailValue)
+    
+    const result = await signUp(formData)
+    
+    if (result?.error) {
+      setError(result.error)
+    } else {
+      setIsSubmitted(true)
+    }
+  }
+
+  if (isSubmitted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
+        <Card className="w-full max-w-md p-8 text-center">
+          <div className="mb-4 text-6xl">📧</div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Check Your Email
+          </h1>
+          <p className="text-gray-600 mb-4">
+            We've sent a confirmation email to:
+          </p>
+          <p className="text-primary-600 font-semibold mb-6">
+            {email}
+          </p>
+          <p className="text-gray-600 mb-6">
+            Click the link in the email to verify your account and start using Kekere!
+          </p>
+          <p className="text-sm text-gray-500">
+            Didn't receive the email? Check your spam folder.
+          </p>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
       <Card className="w-full max-w-md p-8">
@@ -10,7 +55,13 @@ export default function SignupPage() {
           Create Your Account
         </h1>
         
-        <form action={signUp} className="space-y-4">
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+        
+        <form action={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Full Name

@@ -14,6 +14,12 @@ export async function signUp(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('supabase.co', 'vercel.app')}/auth/callback`,
+      data: {
+        name: name
+      }
+    }
   })
   
   if (error) {
@@ -21,6 +27,7 @@ export async function signUp(formData: FormData) {
   }
   
   if (data.user) {
+    // User profile will be created after email confirmation
     await supabase.from('users').insert({
       id: data.user.id,
       name,
@@ -28,8 +35,7 @@ export async function signUp(formData: FormData) {
     })
   }
   
-  revalidatePath('/', 'layout')
-  redirect('/')
+  return { success: true }
 }
 
 export async function signIn(formData: FormData) {
