@@ -16,8 +16,30 @@ export default async function Header() {
             <Logo />
           </Link>
 
+          {/* Navigation Links - Desktop */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              href="/topics"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              Categories
+            </Link>
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              About
+            </Link>
+          </div>
+
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
+          <div className="hidden lg:flex flex-1 max-w-md mx-8">
             <form action="/search" method="get" className="w-full">
               <div className="relative">
                 <input
@@ -44,18 +66,18 @@ export default async function Header() {
           </div>
 
           {/* Right side - Auth buttons */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-4">
             {user ? (
               <>
                 <Link
                   href="/ask"
-                  className="hidden sm:inline-block px-4 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm"
+                  className="hidden sm:inline-block px-6 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors"
                 >
                   Ask Question
                 </Link>
                 <Link
                   href="/ask"
-                  className="sm:hidden px-3 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm"
+                  className="sm:hidden px-4 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors"
                 >
                   Ask
                 </Link>
@@ -65,23 +87,45 @@ export default async function Header() {
               <>
                 <Link
                   href="/login"
-                  className="px-3 sm:px-4 py-2 text-gray-700 hover:text-orange transition-colors font-medium text-sm"
+                  className="px-4 py-2 text-gray-700 hover:text-orange transition-colors font-medium"
                 >
                   Login
                 </Link>
                 <Link
                   href="/signup"
-                  className="px-3 sm:px-6 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm whitespace-nowrap"
+                  className="px-6 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors whitespace-nowrap"
                 >
-                  Join Now
+                  Sign Up
                 </Link>
               </>
             )}
           </div>
         </div>
 
-        {/* Mobile Search */}
-        <div className="md:hidden pb-3">
+        {/* Mobile Navigation */}
+        <div className="md:hidden pb-3 border-t border-gray-200 pt-3 mt-3">
+          <div className="flex justify-center gap-6 mb-3">
+            <Link
+              href="/"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              href="/topics"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              Categories
+            </Link>
+            <Link
+              href="/about"
+              className="text-gray-700 hover:text-orange font-medium transition-colors"
+            >
+              About
+            </Link>
+          </div>
+          
+          {/* Mobile Search */}
           <form action="/search" method="get">
             <div className="relative">
               <input
