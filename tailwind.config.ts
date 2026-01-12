@@ -10,20 +10,24 @@ const config: Config = {
     extend: {
       colors: {
         orange: {
-          500: '#E86A33',
-          600: '#D55E2A',
+          DEFAULT: '#E86A33',
+          light: '#F08B5C',
+          dark: '#D55E2A',
         },
         teal: {
-          600: '#2D9596',
-          700: '#267C7D',
+          DEFAULT: '#2D9596',
+          light: '#5AB5B6',
+          dark: '#267C7D',
         },
         cream: {
-          50: '#FBF8F3',
-          100: '#F5EFE7',
+          DEFAULT: '#FBF8F3',
+          light: '#FBF8F3',
+          dark: '#F5EFE7',
         }
       }
     },
   },
   plugins: [],
 };
+
 export default config;
