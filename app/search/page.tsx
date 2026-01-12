@@ -3,6 +3,11 @@ import Link from 'next/link'
 import Avatar from '@/app/components/ui/Avatar'
 import { formatDate } from '@/app/lib/utils'
 
+export const metadata = {
+  title: 'Search Questions',
+  description: 'Search through thousands of parenting questions and answers from Nigerian parents. Find advice on pregnancy, baby care, child development, and more.',
+}
+
 export default async function SearchPage({
   searchParams,
 }: {
@@ -13,13 +18,11 @@ export default async function SearchPage({
   const topicFilter = searchParams.topic || ''
   const sortBy = searchParams.sort || 'recent'
 
-  // Get all topics for filter dropdown
   const { data: topics } = await supabase
     .from('topics')
     .select('*')
     .order('name')
 
-  // Build search query
   let questionsQuery = supabase
     .from('questions')
     .select(`
@@ -28,22 +31,18 @@ export default async function SearchPage({
       users (id, name, avatar_url)
     `)
 
-  // Apply search filter
   if (query) {
     questionsQuery = questionsQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`)
   }
 
-  // Apply topic filter
   if (topicFilter) {
     questionsQuery = questionsQuery.eq('topic_id', topicFilter)
   }
 
-  // Apply sorting
   questionsQuery = questionsQuery.order('created_at', { ascending: false })
 
   const { data: questions } = await questionsQuery
 
-  // Get counts for each question
   const questionsWithCounts = await Promise.all(
     (questions || []).map(async (question) => {
       const { count: answerCount } = await supabase
@@ -67,7 +66,6 @@ export default async function SearchPage({
   return (
     <div className="min-h-screen bg-cream-light">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Search Results
@@ -79,10 +77,8 @@ export default async function SearchPage({
           )}
         </div>
 
-        {/* Filters */}
         <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
           <form className="flex flex-col sm:flex-row gap-4">
-            {/* Search Input */}
             <div className="flex-1">
               <input
                 type="text"
@@ -93,7 +89,6 @@ export default async function SearchPage({
               />
             </div>
 
-            {/* Topic Filter */}
             <div className="w-full sm:w-48">
               <select
                 name="topic"
@@ -109,7 +104,6 @@ export default async function SearchPage({
               </select>
             </div>
 
-            {/* Sort Filter */}
             <div className="w-full sm:w-48">
               <select
                 name="sort"
@@ -121,7 +115,6 @@ export default async function SearchPage({
               </select>
             </div>
 
-            {/* Search Button */}
             <button
               type="submit"
               className="px-6 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors"
@@ -131,30 +124,25 @@ export default async function SearchPage({
           </form>
         </div>
 
-        {/* Results */}
         {questionsWithCounts && questionsWithCounts.length > 0 ? (
           <div className="space-y-4">
             {questionsWithCounts.map((question) => (
               <Link key={question.id} href={`/questions/${question.id}`}>
                 <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6 hover:shadow-md transition-shadow cursor-pointer">
-                  {/* Topic Badge */}
                   <div className="mb-3">
                     <span className="inline-block px-3 py-1 bg-teal-light text-teal text-sm font-medium rounded-full">
                       {question.topics.name}
                     </span>
                   </div>
 
-                  {/* Question Title */}
                   <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 line-clamp-2">
                     {question.title}
                   </h3>
 
-                  {/* Question Content Preview */}
                   <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
                     {question.content}
                   </p>
 
-                  {/* User Info Row */}
                   <div className="flex items-center gap-3 mb-3">
                     <Avatar
                       name={question.users.name}
@@ -172,7 +160,6 @@ export default async function SearchPage({
                     </div>
                   </div>
 
-                  {/* Stats Row */}
                   <div className="flex items-center gap-4 text-sm text-gray-600">
                     <div className="flex items-center gap-1">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

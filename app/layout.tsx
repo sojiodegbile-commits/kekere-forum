@@ -1,26 +1,75 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
-
-const inter = Inter({ subsets: ['latin'] })
+import type { Metadata } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'Kekere - Parenting Community Forum',
-  description: 'Ask questions, share stories, and connect with a supportive parenting community',
+  metadataBase: new URL('https://kekere-forum.vercel.app'),
+  title: {
+    default: 'Kekere - Nigerian Parenting Community Forum',
+    template: '%s | Kekere'
+  },
+  description: 'Join thousands of Nigerian parents sharing parenting tips, asking questions, and supporting each other. Discuss pregnancy, sleep, feeding, development, health, and more.',
+  keywords: ['Nigerian parents', 'parenting forum', 'parenting community', 'Nigeria', 'baby care', 'child development', 'parenting advice', 'pregnancy', 'motherhood', 'fatherhood'],
+  authors: [{ name: 'Kekere' }],
+  creator: 'Kekere',
+  publisher: 'Kekere',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_NG',
+    url: 'https://kekere-forum.vercel.app',
+    siteName: 'Kekere',
+    title: 'Kekere - Nigerian Parenting Community Forum',
+    description: 'Join thousands of Nigerian parents sharing parenting tips and experiences.',
+    images: [
+      {
+        url: '/images/hero-family.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Kekere - Nigerian Parenting Community',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kekere - Nigerian Parenting Community Forum',
+    description: 'Join thousands of Nigerian parents sharing parenting tips and experiences.',
+    images: ['/images/hero-family.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code', // Add your Google Search Console code later
+  },
 }
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <main className="min-h-screen bg-gray-50">
-          {children}
-        </main>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#E86A33" />
+      </head>
+      <body className="antialiased">
+        {children}
       </body>
     </html>
-  )
+  );
 }

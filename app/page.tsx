@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import Header from '@/app/components/Header'
 import QuestionCard from '@/app/components/QuestionCard'
+import StructuredData from '@/app/components/StructuredData'
 
 export default async function Home() {
   const supabase = await createServerSupabaseClient()
@@ -36,6 +37,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <StructuredData />
       <Header />
 
       {/* Hero Section */}

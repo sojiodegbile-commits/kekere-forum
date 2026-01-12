@@ -7,6 +7,36 @@ import AnswerForm from './AnswerForm'
 import UpvoteButton from './UpvoteButton'
 import QuestionActions from './QuestionActions'
 
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const supabase = await createServerSupabaseClient()
+  const { data: question } = await supabase
+    .from('questions')
+    .select('title, content, topics(name)')
+    .eq('id', params.id)
+    .single()
+
+  if (!question) {
+    return {
+      title: 'Question Not Found',
+    }
+  }
+
+  return {
+    title: question.title,
+    description: question.content.substring(0, 155),
+    openGraph: {
+      title: question.title,
+      description: question.content.substring(0, 155),
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary',
+      title: question.title,
+      description: question.content.substring(0, 155),
+    },
+  }
+}
+
 export default async function QuestionPage({
   params,
 }: {
@@ -15,7 +45,6 @@ export default async function QuestionPage({
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Get question with related data
   const { data: question } = await supabase
     .from('questions')
     .select(`
@@ -30,13 +59,11 @@ export default async function QuestionPage({
     notFound()
   }
 
-  // Get upvote count
   const { count: upvoteCount } = await supabase
     .from('upvotes')
     .select('*', { count: 'exact', head: true })
     .eq('question_id', question.id)
 
-  // Check if user has upvoted
   let hasUpvoted = false
   if (user) {
     const { data: userUpvote } = await supabase
@@ -48,7 +75,6 @@ export default async function QuestionPage({
     hasUpvoted = !!userUpvote
   }
 
-  // Get answers with user info
   const { data: answers } = await supabase
     .from('answers')
     .select(`
@@ -58,7 +84,6 @@ export default async function QuestionPage({
     .eq('question_id', question.id)
     .order('created_at', { ascending: false })
 
-  // Get upvotes for each answer
   const answersWithVotes = await Promise.all(
     (answers || []).map(async (answer) => {
       const { count: answerUpvotes } = await supabase
@@ -88,7 +113,6 @@ export default async function QuestionPage({
   return (
     <div className="min-h-screen bg-cream-light py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Breadcrumb */}
         <div className="mb-6">
           <Link href="/" className="text-orange hover:text-orange-dark">
             Home
@@ -102,9 +126,7 @@ export default async function QuestionPage({
           </Link>
         </div>
 
-        {/* Question Card */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          {/* Topic Badge */}
           <div className="mb-4">
             <Link
               href={`/topics/${question.topics.id}`}
@@ -114,17 +136,14 @@ export default async function QuestionPage({
             </Link>
           </div>
 
-          {/* Question Title */}
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             {question.title}
           </h1>
 
-          {/* Question Content */}
           <div className="prose max-w-none mb-6">
             <p className="text-gray-700 whitespace-pre-wrap">{question.content}</p>
           </div>
 
-          {/* User Info and Actions */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-3">
               <Avatar
@@ -159,13 +178,11 @@ export default async function QuestionPage({
           </div>
         </div>
 
-        {/* Answers Section */}
         <div className="bg-white rounded-lg shadow-sm p-6">
           <h2 className="text-xl font-bold text-gray-900 mb-6">
             {answersWithVotes.length} {answersWithVotes.length === 1 ? 'Answer' : 'Answers'}
           </h2>
 
-          {/* Answer Form */}
           {user ? (
             <div className="mb-8">
               <AnswerForm questionId={question.id} />
@@ -184,7 +201,6 @@ export default async function QuestionPage({
             </div>
           )}
 
-          {/* Answers List */}
           <div className="space-y-6">
             {answersWithVotes.map((answer) => (
               <div
