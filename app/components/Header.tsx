@@ -1,71 +1,112 @@
 import Link from 'next/link'
-import { Logo } from './Logo'
-import { OrangeButton } from './ui/OrangeButton'
-import { UserMenu } from './UserMenu'
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
+import Logo from './Logo'
+import UserMenu from './UserMenu'
 
-export async function Header() {
+export default async function Header() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
-  let profile = null
-  if (user) {
-    const { data } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', user.id)
-      .single()
-    profile = data
-  }
-  
+
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 sm:h-20">
-          <Logo />
-          
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/" className="text-gray-700 hover:text-gray-900 font-medium text-base">
-              Home
-            </Link>
-            <Link href="/topics" className="text-gray-900 hover:text-gray-900 font-semibold text-base">
-              Categories
-            </Link>
-            <Link href="/about" className="text-gray-700 hover:text-gray-900 font-medium text-base">
-              About
-            </Link>
-          </nav>
-          
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            {user && profile ? (
+    <header className="bg-white shadow-sm sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <Link href="/" className="flex-shrink-0">
+            <Logo />
+          </Link>
+
+          {/* Search Bar - Desktop */}
+          <div className="hidden md:flex flex-1 max-w-md mx-8">
+            <form action="/search" method="get" className="w-full">
+              <div className="relative">
+                <input
+                  type="text"
+                  name="q"
+                  placeholder="Search questions..."
+                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange focus:border-transparent"
+                />
+                <svg
+                  className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+            </form>
+          </div>
+
+          {/* Right side - Auth buttons */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {user ? (
               <>
-                <Link href="/ask" className="hidden sm:block">
-                  <OrangeButton className="text-sm sm:text-base px-4 sm:px-6">Ask Question</OrangeButton>
+                <Link
+                  href="/ask"
+                  className="hidden sm:inline-block px-4 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm"
+                >
+                  Ask Question
                 </Link>
-                <UserMenu user={profile} />
+                <Link
+                  href="/ask"
+                  className="sm:hidden px-3 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm"
+                >
+                  Ask
+                </Link>
+                <UserMenu user={user} />
               </>
             ) : (
               <>
-                <Link href="/login" className="hidden sm:block">
-                  <button className="text-gray-700 hover:text-gray-900 px-3 sm:px-4 py-2 font-medium text-sm sm:text-base">
-                    Login
-                  </button>
+                <Link
+                  href="/login"
+                  className="px-3 sm:px-4 py-2 text-gray-700 hover:text-orange transition-colors font-medium text-sm"
+                >
+                  Login
                 </Link>
-                <Link href="/signup" className="hidden sm:block">
-                  <button className="text-gray-700 hover:text-gray-900 px-3 sm:px-4 py-2 font-medium text-sm sm:text-base">
-                    Sign Up
-                  </button>
-                </Link>
-                <Link href="/signup">
-                  <OrangeButton className="text-xs sm:text-base px-3 sm:px-6 py-2 whitespace-nowrap">
-                    Join Now
-                  </OrangeButton>
+                <Link
+                  href="/signup"
+                  className="px-3 sm:px-6 py-2 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors text-sm whitespace-nowrap"
+                >
+                  Join Now
                 </Link>
               </>
             )}
           </div>
         </div>
-      </div>
+
+        {/* Mobile Search */}
+        <div className="md:hidden pb-3">
+          <form action="/search" method="get">
+            <div className="relative">
+              <input
+                type="text"
+                name="q"
+                placeholder="Search questions..."
+                className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange focus:border-transparent"
+              />
+              <svg
+                className="absolute left-3 top-2.5 h-5 w-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </form>
+        </div>
+      </nav>
     </header>
   )
 }

@@ -1,35 +1,37 @@
 interface AvatarProps {
   name: string
-  src?: string | null
+  avatarUrl?: string | null
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function Avatar({ name, src, size = 'md' }: AvatarProps) {
-  const sizes = {
+export default function Avatar({ name, avatarUrl, size = 'md' }: AvatarProps) {
+  const sizeClasses = {
     sm: 'w-8 h-8 text-sm',
     md: 'w-10 h-10 text-base',
     lg: 'w-16 h-16 text-xl'
   }
-  
+
   const initials = name
     .split(' ')
     .map(n => n[0])
     .join('')
     .toUpperCase()
     .slice(0, 2)
-  
-  if (src) {
+
+  if (avatarUrl) {
     return (
       <img
-        src={src}
+        src={avatarUrl}
         alt={name}
-        className={`${sizes[size]} rounded-full object-cover`}
+        className={`${sizeClasses[size]} rounded-full object-cover`}
       />
     )
   }
-  
+
   return (
-    <div className={`${sizes[size]} rounded-full bg-primary-500 text-white flex items-center justify-center font-semibold`}>
+    <div
+      className={`${sizeClasses[size]} rounded-full bg-gradient-to-br from-orange to-teal flex items-center justify-center text-white font-semibold`}
+    >
       {initials}
     </div>
   )
