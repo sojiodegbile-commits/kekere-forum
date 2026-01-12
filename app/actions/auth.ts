@@ -15,7 +15,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL?.replace('supabase.co', 'vercel.app')}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kekere-forum.vercel.app'}/auth/callback`,
       data: {
         name: name
       }
@@ -26,15 +26,7 @@ export async function signUp(formData: FormData) {
     return { error: error.message }
   }
   
-  if (data.user) {
-    // User profile will be created after email confirmation
-    await supabase.from('users').insert({
-      id: data.user.id,
-      name,
-      avatar_url: null,
-    })
-  }
-  
+  // User profile will be created after email confirmation via callback
   return { success: true }
 }
 
