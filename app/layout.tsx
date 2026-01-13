@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from '@vercel/analytics/react';
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -51,7 +52,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: 'your-google-verification-code', // Add your Google Search Console code later
+    google: 'your-google-verification-code',
   },
 }
 
@@ -69,6 +70,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
+        <Analytics />
       </body>
     </html>
   );
