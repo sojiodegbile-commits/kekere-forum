@@ -1,51 +1,63 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/app/components/ui/Card'
-import { Button } from '@/app/components/ui/Button'
+import { useRouter } from 'next/navigation'
 import { createAnswer } from '@/app/actions/answers'
+import RichTextEditor from '@/app/components/RichTextEditor'
 
 export default function AnswerForm({ questionId }: { questionId: string }) {
+  const router = useRouter()
   const [content, setContent] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setIsSubmitting(true)
-    
+    setLoading(true)
+    setError('')
+
     const formData = new FormData()
     formData.append('content', content)
-    formData.append('questionId', questionId)
-    
-    await createAnswer(formData)
-    setContent('')
-    setIsSubmitting(false)
+    formData.append('question_id', questionId)
+
+    const result = await createAnswer(formData)
+
+    if (result.error) {
+      setError(result.error)
+      setLoading(false)
+    } else {
+      setContent('')
+      setLoading(false)
+      router.refresh()
+    }
   }
 
   return (
-    <Card className="p-6">
-      <h3 className="text-xl font-semibold text-gray-900 mb-4">
-        Your Answer
-      </h3>
-      
-      <form onSubmit={handleSubmit}>
-        <textarea
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-semibold text-gray-900 mb-2">
+          Your Answer
+        </label>
+        <RichTextEditor
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          minLength={10}
-          rows={6}
-          placeholder="Share your experience or advice..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 mb-4"
+          onChange={setContent}
+          placeholder="Share your advice, experience, or thoughts..."
         />
-        
-        <Button 
-          type="submit" 
-          disabled={isSubmitting || content.length < 10}
-        >
-          {isSubmitting ? 'Posting...' : 'Post Answer'}
-        </Button>
-      </form>
-    </Card>
+      </div>
+
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
+
+      <button
+        type="submit"
+        disabled={loading || !content.trim()}
+        className="px-6 py-3 bg-orange text-white font-semibold rounded-lg hover:bg-orange-dark transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+      >
+        {loading ? 'Posting...' : 'Post Answer'}
+      </button>
+    </form>
   )
 }

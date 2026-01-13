@@ -140,8 +140,8 @@ export default async function QuestionPage({
             {question.title}
           </h1>
 
-          <div className="prose max-w-none mb-6">
-            <p className="text-gray-700 whitespace-pre-wrap">{question.content}</p>
+          <div className="prose-content max-w-none mb-6">
+            <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: question.content }} />
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
@@ -207,8 +207,8 @@ export default async function QuestionPage({
                 key={answer.id}
                 className="border-t border-gray-200 pt-6 first:border-t-0 first:pt-0"
               >
-                <div className="prose max-w-none mb-4">
-                  <p className="text-gray-700 whitespace-pre-wrap">{answer.content}</p>
+                <div className="prose-content max-w-none mb-4">
+                  <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: answer.content }} />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
