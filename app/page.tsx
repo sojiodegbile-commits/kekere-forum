@@ -33,6 +33,10 @@ export default async function Home() {
     'Behavior': '/images/behavior.jpg',
     'Health': '/images/health.jpg',
     'Activities': '/images/activities.jpg',
+    'Discipline': '/images/discipline.jpg',
+    'School': '/images/school.jpg',
+    'Newborns': '/images/newborns.jpg',
+    'Toddlers': '/images/toddlers.jpg',
   }
 
   return (
@@ -89,7 +93,7 @@ export default async function Home() {
               Find discussions on topics that matter to you
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
             {topics?.map((topic) => (
               <Link
                 key={topic.id}
