@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { formatDate } from '@/app/lib/utils'
 import Avatar from '@/app/components/ui/Avatar'
 import AnswerForm from './AnswerForm'
@@ -144,6 +145,22 @@ export default async function QuestionPage({
             <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: question.content }} />
           </div>
 
+          {/* Display Images */}
+          {question.image_urls && question.image_urls.length > 0 && (
+            <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {question.image_urls.map((url: string, index: number) => (
+                <div key={index} className="relative aspect-video rounded-lg overflow-hidden border border-gray-200">
+                  <Image
+                    src={url}
+                    alt={`Question image ${index + 1}`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-gray-200">
             <div className="flex items-center gap-3">
               <Avatar
@@ -210,6 +227,23 @@ export default async function QuestionPage({
                 <div className="prose-content max-w-none mb-4">
                   <div className="text-gray-700" dangerouslySetInnerHTML={{ __html: answer.content }} />
                 </div>
+
+                {/* Display Answer Images */}
+                {answer.image_urls && answer.image_urls.length > 0 && (
+                  <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {answer.image_urls.map((url: string, index: number) => (
+                      <div key={index} className="relative aspect-video rounded-lg overflow-hidden border border-gray-200">
+                        <Image
+                          src={url}
+                          alt={`Answer image ${index + 1}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar

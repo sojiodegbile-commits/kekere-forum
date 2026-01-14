@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createQuestion } from '@/app/actions/questions'
 import RichTextEditor from '@/app/components/RichTextEditor'
+import ImageUpload from '@/app/components/ImageUpload'
 
-// Mock topics - in real app, fetch from Supabase
 const topics = [
   { id: '1', name: 'Pregnancy' },
   { id: '2', name: 'Sleep' },
@@ -27,6 +27,11 @@ export default function AskQuestionPage() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [topicId, setTopicId] = useState('')
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+
+  function handleImageUploaded(url: string) {
+    setImageUrls([...imageUrls, url])
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,6 +42,7 @@ export default function AskQuestionPage() {
     formData.append('title', title)
     formData.append('content', content)
     formData.append('topic_id', topicId)
+    formData.append('image_urls', JSON.stringify(imageUrls))
 
     const result = await createQuestion(formData)
 
@@ -115,6 +121,12 @@ export default function AskQuestionPage() {
                 placeholder="Describe your question in detail. Use formatting to make it clear..."
               />
             </div>
+
+            {/* Image Upload */}
+            <ImageUpload
+              onImageUploaded={handleImageUploaded}
+              currentImages={imageUrls}
+            />
 
             {/* Submit Button */}
             <div className="flex gap-4">

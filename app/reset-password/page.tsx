@@ -1,22 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { useRouter } from 'next/navigation'
+import { createBrowserClient } from '@supabase/ssr'
 
 export default function ResetPasswordPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
-    // Check if user came from password reset email
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) {
@@ -24,7 +25,7 @@ export default function ResetPasswordPage() {
       }
     }
     checkSession()
-  }, [supabase])
+  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -128,17 +129,3 @@ export default function ResetPasswordPage() {
     </div>
   )
 }
-```
-
-Save and close!
-
----
-
-### Step 2: Update Supabase Email Template
-
-1. Go to Supabase Dashboard
-2. Click **Authentication** → **Email Templates**
-3. Find **"Reset Password"** template
-4. Change the reset URL to:
-```
-   {{ .SiteURL }}/reset-password?token={{ .Token }}&type=recovery

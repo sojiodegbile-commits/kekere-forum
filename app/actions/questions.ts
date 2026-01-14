@@ -14,7 +14,18 @@ export async function createQuestion(formData: FormData) {
   
   const title = formData.get('title') as string
   const content = formData.get('content') as string
-  const topicId = formData.get('topicId') as string
+  const topicId = formData.get('topic_id') as string
+  const imageUrlsJson = formData.get('image_urls') as string
+  
+  // Parse image URLs
+  let imageUrls: string[] = []
+  if (imageUrlsJson) {
+    try {
+      imageUrls = JSON.parse(imageUrlsJson)
+    } catch (e) {
+      // If parsing fails, ignore images
+    }
+  }
   
   const { data, error } = await supabase
     .from('questions')
@@ -23,6 +34,7 @@ export async function createQuestion(formData: FormData) {
       content,
       topic_id: topicId,
       user_id: user.id,
+      image_urls: imageUrls.length > 0 ? imageUrls : null,
     })
     .select()
     .single()
