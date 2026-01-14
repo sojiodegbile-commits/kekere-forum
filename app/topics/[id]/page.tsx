@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Avatar from '@/app/components/ui/Avatar'
 import { formatDate } from '@/app/lib/utils'
+import FollowTopicButton from '@/app/components/FollowTopicButton'
 
 export const metadata = {
   title: 'Browse Topic',
@@ -25,6 +26,19 @@ export default async function TopicDetailPage({
 
   if (!topic) {
     notFound()
+  }
+
+  // Check if user is following this topic
+  let isFollowing = false
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: follow } = await supabase
+      .from('topic_follows')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('topic_id', topic.id)
+      .single()
+    isFollowing = !!follow
   }
 
   // Get questions for this topic
@@ -76,13 +90,25 @@ export default async function TopicDetailPage({
         </div>
 
         {/* Topic Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {topic.name}
-          </h1>
-          <p className="text-xl text-gray-600">
-            {topic.description}
-          </p>
+        <div className="bg-white rounded-lg shadow-sm p-8 mb-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="flex-1">
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                {topic.name}
+              </h1>
+              <p className="text-xl text-gray-600">
+                {topic.description}
+              </p>
+            </div>
+            {user && (
+              <div className="flex-shrink-0">
+                <FollowTopicButton
+                  topicId={topic.id}
+                  initialFollowing={isFollowing}
+                />
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Questions */}
@@ -105,7 +131,7 @@ export default async function TopicDetailPage({
 
                   {/* Question Content Preview */}
                   <p className="text-gray-600 mb-4 line-clamp-2 text-sm sm:text-base">
-                    {question.content}
+                    {question.content.replace(/<[^>]*>/g, '')}
                   </p>
 
                   {/* User Info Row */}
