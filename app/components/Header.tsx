@@ -30,12 +30,17 @@ export default async function Header() {
             >
               Categories
             </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-orange font-medium transition-colors"
-            >
-              About
-            </Link>
+            {user && (
+              <Link
+                href="/bookmarks"
+                className="text-gray-700 hover:text-orange font-medium transition-colors flex items-center gap-1"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                </svg>
+                Bookmarks
+              </Link>
+            )}
           </div>
 
           {/* Search Bar - Desktop */}
@@ -117,12 +122,14 @@ export default async function Header() {
             >
               Categories
             </Link>
-            <Link
-              href="/about"
-              className="text-gray-700 hover:text-orange font-medium transition-colors"
-            >
-              About
-            </Link>
+            {user && (
+              <Link
+                href="/bookmarks"
+                className="text-gray-700 hover:text-orange font-medium transition-colors"
+              >
+                Bookmarks
+              </Link>
+            )}
           </div>
           
           {/* Mobile Search */}
@@ -153,4 +160,4 @@ export default async function Header() {
       </nav>
     </header>
   )
-}
+}SSS
