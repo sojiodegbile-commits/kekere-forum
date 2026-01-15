@@ -179,8 +179,9 @@ export default function PrivacyPage() {
                 For questions about these Terms or Privacy Policy, or to exercise your rights, contact us at:
               </p>
               <div className="bg-teal-light p-6 rounded-lg mt-4">
-                <p className="font-semibold">Email: <a href="mailto:privacy@kekere.ng" className="text-teal hover:text-teal-dark">privacy@kekere.ng</a></p>
-                <p className="font-semibold mt-2">Legal: <a href="mailto:legal@kekere.ng" className="text-teal hover:text-teal-dark">legal@kekere.ng</a></p>
+                <p className="font-semibold text-lg">
+                  Email: <a href="mailto:hello@mykekere.com" className="text-teal hover:text-teal-dark">hello@mykekere.com</a>
+                </p>
               </div>
             </section>
           </div>

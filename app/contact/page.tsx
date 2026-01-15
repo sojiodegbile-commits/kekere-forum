@@ -30,9 +30,9 @@ export default function ContactPage() {
                   </svg>
                   <h3 className="text-xl font-bold text-gray-900">Email Us</h3>
                 </div>
-                <p className="text-gray-700 mb-2">For general inquiries and support:</p>
-                <a href="mailto:hello@kekere.ng" className="text-orange font-semibold hover:text-orange-dark">
-                  hello@kekere.ng
+                <p className="text-gray-700 mb-2">For all inquiries and support:</p>
+                <a href="mailto:hello@mykekere.com" className="text-orange font-semibold hover:text-orange-dark text-lg">
+                  hello@mykekere.com
                 </a>
               </div>
 
@@ -44,29 +44,53 @@ export default function ContactPage() {
                   <h3 className="text-xl font-bold text-gray-900">Community Support</h3>
                 </div>
                 <p className="text-gray-700 mb-2">Get help from our community:</p>
-                <Link href="/topics" className="text-teal font-semibold hover:text-teal-dark">
+                <Link href="/topics" className="text-teal font-semibold hover:text-teal-dark text-lg">
                   Browse Forums →
                 </Link>
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Report Issues</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">What We Can Help With</h2>
+            
+            <div className="grid md:grid-cols-2 gap-6 my-6">
+              <div className="border-l-4 border-orange p-4">
+                <h3 className="font-bold text-gray-900 mb-2">General Inquiries</h3>
+                <p className="text-sm text-gray-600">Questions about Kekere, features, or how to use the platform</p>
+              </div>
+              
+              <div className="border-l-4 border-teal p-4">
+                <h3 className="font-bold text-gray-900 mb-2">Technical Support</h3>
+                <p className="text-sm text-gray-600">Help with account issues, bugs, or technical problems</p>
+              </div>
+              
+              <div className="border-l-4 border-orange p-4">
+                <h3 className="font-bold text-gray-900 mb-2">Report Content</h3>
+                <p className="text-sm text-gray-600">Flag inappropriate content or violations of community guidelines</p>
+              </div>
+              
+              <div className="border-l-4 border-teal p-4">
+                <h3 className="font-bold text-gray-900 mb-2">Business & Partnerships</h3>
+                <p className="text-sm text-gray-600">Advertising, collaborations, or partnership opportunities</p>
+              </div>
+            </div>
+
+            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Report Inappropriate Content</h2>
             <div className="bg-red-50 border-l-4 border-red-400 p-6 my-6">
-              <h3 className="font-bold text-gray-900 mb-2">Report Inappropriate Content</h3>
               <p className="text-gray-700 mb-3">
                 If you encounter content that violates our community guidelines, please report it immediately:
               </p>
-              <a href="mailto:report@kekere.ng" className="text-red-600 font-semibold hover:text-red-700">
-                report@kekere.ng
+              <a href="mailto:hello@mykekere.com?subject=Content Report" className="text-red-600 font-semibold hover:text-red-700 text-lg">
+                hello@mykekere.com
               </a>
+              <p className="text-sm text-gray-600 mt-2">Please include: the question/answer URL, reason for report, and any relevant details</p>
             </div>
 
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Business Inquiries</h2>
-            <p>
+            <p className="mb-3">
               Interested in partnerships, advertising, or business collaborations?
             </p>
-            <a href="mailto:business@kekere.ng" className="text-orange font-semibold hover:text-orange-dark">
-              business@kekere.ng
+            <a href="mailto:hello@mykekere.com?subject=Business Inquiry" className="text-orange font-semibold hover:text-orange-dark text-lg">
+              hello@mykekere.com
             </a>
 
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Social Media</h2>
@@ -94,7 +118,7 @@ export default function ContactPage() {
             <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">Response Time</h2>
             <p>
               We aim to respond to all inquiries within 24-48 hours during business days. 
-              For urgent matters, please mark your email as "Urgent" in the subject line.
+              For urgent matters, please mark your email subject as "URGENT" to prioritize your request.
             </p>
 
             <div className="bg-teal-light p-6 rounded-lg mt-8">
