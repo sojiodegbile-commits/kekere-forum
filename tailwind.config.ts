@@ -9,22 +9,38 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        orange: {
-          DEFAULT: '#E86A33',
-          light: '#F08B5C',
-          dark: '#D55E2A',
+        // New Sage Green + Warm Beige theme
+        'sage': {
+          light: '#E8F0E5',
+          DEFAULT: '#8B9D83',
+          dark: '#6B7D63',
         },
-        teal: {
-          DEFAULT: '#2D9596',
-          light: '#5AB5B6',
-          dark: '#267C7D',
+        'warm-beige': {
+          light: '#FDF8F3',
+          DEFAULT: '#E8B4A8',
+          dark: '#D49B8E',
         },
-        cream: {
-          DEFAULT: '#FBF8F3',
-          light: '#FBF8F3',
-          dark: '#F5EFE7',
-        }
-      }
+        'cream': {
+          light: '#FFFBF7',
+          DEFAULT: '#FAF8F5',
+        },
+        // Keep orange as accent
+        'orange': {
+          light: '#FFE5D9',
+          DEFAULT: '#F97316',
+          dark: '#EA580C',
+        },
+        'teal': {
+          light: '#D1FAE5',
+          DEFAULT: '#10B981',
+          dark: '#059669',
+        },
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+      },
     },
   },
   plugins: [],
