@@ -26,8 +26,9 @@ export async function signUp(formData: FormData) {
     return { error: error.message }
   }
   
-  // User profile will be created after email confirmation via callback
-  return { success: true }
+  // No email confirmation needed, redirect to home
+  revalidatePath('/', 'layout')
+  redirect('/')
 }
 
 export async function signIn(formData: FormData) {
