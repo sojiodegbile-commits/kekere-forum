@@ -24,20 +24,6 @@ export default async function Home() {
     .order('created_at', { ascending: false })
     .limit(5)
 
-  const categoryImages: Record<string, string> = {
-    'Pregnancy': '/images/pregnancy.jpg',
-    'Sleep': '/images/sleep.jpg',
-    'Feeding': '/images/feeding.jpg',
-    'Development': '/images/development.jpg',
-    'Behavior': '/images/behavior.jpg',
-    'Health': '/images/health.jpg',
-    'Activities': '/images/activities.jpg',
-    'Discipline': '/images/discipline.jpg',
-    'School': '/images/school.jpg',
-    'Newborns': '/images/newborns.jpg',
-    'Toddlers': '/images/toddlers.jpg',
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -91,30 +77,41 @@ export default async function Home() {
               Find discussions on topics that matter to you
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-            {topics?.map((topic) => (
-              <Link
-                key={topic.id}
-                href={`/topics/${topic.id}`}
-                className="group"
-              >
-                <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1">
-                  <div className="relative h-32">
-                    <Image
-                      src={categoryImages[topic.name] || '/images/placeholder.jpg'}
-                      alt={topic.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="p-4 text-center">
-                    <h3 className="font-semibold text-gray-900">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {topics?.map((topic) => {
+              const categoryConfig: Record<string, { icon: string; color: string; bgColor: string }> = {
+                'Pregnancy': { icon: '🤰', color: 'text-orange', bgColor: 'bg-orange-light' },
+                'Sleep': { icon: '😴', color: 'text-blue-600', bgColor: 'bg-blue-100' },
+                'Feeding': { icon: '🍼', color: 'text-teal', bgColor: 'bg-teal-light' },
+                'Development': { icon: '🧸', color: 'text-purple-600', bgColor: 'bg-purple-100' },
+                'Behavior': { icon: '🤝', color: 'text-green-600', bgColor: 'bg-green-100' },
+                'Health': { icon: '❤️', color: 'text-red-600', bgColor: 'bg-red-100' },
+                'Activities': { icon: '🎨', color: 'text-pink-600', bgColor: 'bg-pink-100' },
+                'Discipline': { icon: '⭐', color: 'text-yellow-600', bgColor: 'bg-yellow-100' },
+                'School': { icon: '🎒', color: 'text-indigo-600', bgColor: 'bg-indigo-100' },
+                'Newborns': { icon: '👶', color: 'text-orange', bgColor: 'bg-orange-light' },
+                'Toddlers': { icon: '🚼', color: 'text-teal', bgColor: 'bg-teal-light' },
+              }
+              
+              const config = categoryConfig[topic.name] || { icon: '📌', color: 'text-gray-600', bgColor: 'bg-gray-100' }
+              
+              return (
+                <Link
+                  key={topic.id}
+                  href={`/topics/${topic.id}`}
+                  className="group"
+                >
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 p-6">
+                    <div className={`${config.bgColor} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+                      <span className="text-4xl">{config.icon}</span>
+                    </div>
+                    <h3 className={`font-bold text-lg text-center ${config.color} group-hover:underline`}>
                       {topic.name}
                     </h3>
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         </div>
       </section>
