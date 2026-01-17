@@ -1,123 +1,179 @@
 'use client'
 
 import { useState } from 'react'
-import { Card } from '@/app/components/ui/Card'
-import { signUp } from '@/app/actions/auth'
 import Link from 'next/link'
+import { signUp } from '@/app/actions/auth'
 
-export default function SignupPage() {
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
+export default function SignUpPage() {
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
-  async function handleSubmit(formData: FormData) {
-    const emailValue = formData.get('email') as string
-    setEmail(emailValue)
-    
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
+
+    const formData = new FormData(e.currentTarget)
+    const password = formData.get('password') as string
+    const confirmPassword = formData.get('confirmPassword') as string
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
+    // Check password length
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      setLoading(false)
+      return
+    }
+
     const result = await signUp(formData)
-    
+
     if (result?.error) {
       setError(result.error)
-    } else {
-      setIsSubmitted(true)
+      setLoading(false)
     }
   }
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
-        <Card className="w-full max-w-md p-8 text-center">
-          <div className="mb-4 text-6xl">📧</div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Check Your Email
-          </h1>
-          <p className="text-gray-600 mb-4">
-            We've sent a confirmation email to:
-          </p>
-          <p className="text-primary-600 font-semibold mb-6">
-            {email}
-          </p>
-          <p className="text-gray-600 mb-6">
-            Click the link in the email to verify your account and start using Kekere!
-          </p>
-          <p className="text-sm text-gray-500">
-            Didn't receive the email? Check your spam folder.
-          </p>
-        </Card>
-      </div>
-    )
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
-      <Card className="w-full max-w-md p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Create Your Account
-        </h1>
-        
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg text-sm">
-            {error}
+    <div className="min-h-screen bg-cream-light flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            Create your account
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Join the Kekere community
+          </p>
+        </div>
+
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {error && (
+            <div className="rounded-md bg-red-50 p-4">
+              <div className="text-sm text-red-700">{error}</div>
+            </div>
+          )}
+
+          <div className="rounded-md shadow-sm space-y-4">
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange focus:border-orange focus:z-10 sm:text-sm"
+                placeholder="Your full name"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange focus:border-orange focus:z-10 sm:text-sm"
+                placeholder="Email address"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange focus:border-orange focus:z-10 sm:text-sm pr-10"
+                  placeholder="Password (min. 6 characters)"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  ) : (
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  required
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-orange focus:border-orange focus:z-10 sm:text-sm pr-10"
+                  placeholder="Confirm your password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? (
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    </svg>
+                  ) : (
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
           </div>
-        )}
-        
-        <form action={handleSubmit} className="space-y-4">
+
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-orange hover:bg-orange-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating account...' : 'Sign up'}
+            </button>
           </div>
-          
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
+
+          <div className="text-center">
+            <Link href="/login" className="font-medium text-orange hover:text-orange-dark">
+              Already have an account? Log in
+            </Link>
           </div>
-          
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              minLength={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-            />
-          </div>
-          
-          <button 
-            type="submit"
-            className="w-full text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-            style={{ backgroundColor: '#E86A33' }}
-          >
-            Sign Up
-          </button>
         </form>
-        
-        <p className="text-center text-gray-600 mt-4">
-          Already have an account?{' '}
-          <Link href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
-            Log in
-          </Link>
-        </p>
-      </Card>
+      </div>
     </div>
   )
 }
