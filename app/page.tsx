@@ -2,6 +2,8 @@ import { createServerSupabaseClient } from '@/app/lib/supabase/server'
 import Link from 'next/link'
 import Header from '@/app/components/Header'
 import QuestionCard from '@/app/components/QuestionCard'
+import { cookies } from 'next/headers'
+import WelcomeToast from '@/app/components/WelcomeToast'
 
 export const metadata = {
   title: 'Kekere - Nigerian Parenting Community',
@@ -9,11 +11,11 @@ export const metadata = {
   openGraph: {
     title: 'Kekere - Nigerian Parenting Community',
     description: 'Join thousands of Nigerian parents sharing tips and experiences.',
-    url: 'https://kekere-forum.vercel.app',
+    url: 'https://mykekere.com',
     siteName: 'Kekere',
     images: [
       {
-        url: 'https://kekere-forum.vercel.app/og-image.jpg',
+        url: 'https://mykekere.com/og-image.jpg',
         width: 1200,
         height: 630,
         alt: 'Kekere - Nigerian Parenting Community',
@@ -26,12 +28,16 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'Kekere - Nigerian Parenting Community',
     description: 'Join thousands of Nigerian parents sharing tips and experiences.',
-    images: ['https://kekere-forum.vercel.app/og-image.jpg'],
+    images: ['https://mykekere.com/og-image.jpg'],
   },
 }
 
 export default async function Home() {
   const supabase = await createServerSupabaseClient()
+
+  // Check for welcome cookie
+  const cookieStore = await cookies()
+  const welcomeUser = cookieStore.get('welcome_user')?.value
 
   const { data: topics } = await supabase
     .from('topics')
@@ -52,6 +58,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {welcomeUser && <WelcomeToast userName={welcomeUser} />}
       <Header />
 
       {/* Hero Section - Optimized for Desktop */}
@@ -105,7 +112,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Categories Section - Better Desktop Layout */}
+      {/* Categories Section */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">

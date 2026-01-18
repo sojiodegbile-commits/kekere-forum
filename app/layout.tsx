@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Analytics } from '@vercel/analytics/react';
+import ToastProvider from './components/ToastProvider';
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://kekere-forum.vercel.app'),
+  metadataBase: new URL('https://mykekere.com'),
   title: {
     default: 'Kekere - Nigerian Parenting Community Forum',
     template: '%s | Kekere'
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_NG',
-    url: 'https://kekere-forum.vercel.app',
+    url: 'https://mykekere.com',
     siteName: 'Kekere',
     title: 'Kekere - Nigerian Parenting Community Forum',
     description: 'Join thousands of Nigerian parents sharing parenting tips and experiences.',
@@ -66,9 +67,10 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#E86A33" />
+        <meta name="theme-color" content="#8B9D83" />
       </head>
       <body className="antialiased">
+        <ToastProvider />
         {children}
         <Analytics />
       </body>
