@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { signUp } from '@/app/actions/auth'
+import { createBrowserSupabaseClient } from '@/app/lib/supabase/client'
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null)
@@ -40,15 +41,19 @@ export default function SignUpPage() {
   }
 
   async function handleGoogleSignIn() {
-    const { createBrowserSupabaseClient } = await import('@/app/lib/supabase/client')
     const supabase = createBrowserSupabaseClient()
     
-    await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/auth/callback`
       }
     })
+    
+    if (error) {
+      console.error('Google sign-in error:', error)
+      setError('Failed to sign up with Google. Please try again.')
+    }
   }
 
   return (
