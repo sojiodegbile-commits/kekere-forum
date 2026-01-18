@@ -7,6 +7,7 @@ import { createBrowserSupabaseClient } from '@/app/lib/supabase/client'
 
 export default function SignUpPage() {
   const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -14,6 +15,7 @@ export default function SignUpPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
+    setSuccess(null)
     setLoading(true)
 
     const formData = new FormData(e.currentTarget)
@@ -36,6 +38,10 @@ export default function SignUpPage() {
 
     if (result?.error) {
       setError(result.error)
+      setLoading(false)
+    } else if (result?.emailSent) {
+      // Show success message - email sent
+      setSuccess('✅ Account created! Please check your email to confirm your account.')
       setLoading(false)
     }
   }
@@ -98,6 +104,17 @@ export default function SignUpPage() {
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="text-sm text-red-700">{error}</div>
+            </div>
+          )}
+
+          {success && (
+            <div className="rounded-md bg-green-50 p-4 border border-green-200">
+              <div className="flex items-center">
+                <svg className="h-5 w-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                </svg>
+                <div className="text-sm text-green-700">{success}</div>
+              </div>
             </div>
           )}
 

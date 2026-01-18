@@ -15,7 +15,7 @@ export async function signUp(formData: FormData) {
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://kekere-forum.vercel.app'}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mykekere.com'}/auth/callback`,
       data: {
         name: name
       }
@@ -26,7 +26,13 @@ export async function signUp(formData: FormData) {
     return { error: error.message }
   }
   
-  // No email confirmation needed, redirect to home
+  // Check if email confirmation is required
+  if (data.user && !data.session) {
+    // Email confirmation required - user created but not logged in yet
+    return { success: true, emailSent: true }
+  }
+  
+  // User logged in successfully (Google OAuth or if confirmation is disabled)
   revalidatePath('/', 'layout')
   redirect('/')
 }
