@@ -1,6 +1,5 @@
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export const metadata = {
   title: 'Browse Parenting Topics',
@@ -32,22 +31,78 @@ export default async function TopicsPage() {
     followedTopicIds = follows?.map(f => f.topic_id) || []
   }
 
-  const categoryImages: Record<string, string> = {
-    'Pregnancy': '/images/pregnancy.jpg',
-    'Sleep': '/images/sleep.jpg',
-    'Feeding': '/images/feeding.jpg',
-    'Development': '/images/development.jpg',
-    'Behavior': '/images/behavior.jpg',
-    'Health': '/images/health.jpg',
-    'Activities': '/images/activities.jpg',
-    'Discipline': '/images/discipline.jpg',
-    'School': '/images/school.jpg',
-    'Newborns': '/images/newborns.jpg',
-    'Toddlers': '/images/toddlers.jpg',
+  // Emoji-based category configuration (matching homepage)
+  const categoryConfig: Record<string, { icon: string; color: string; bgColor: string; description: string }> = {
+    'Pregnancy': { 
+      icon: '🤰', 
+      color: 'text-warm-beige-dark', 
+      bgColor: 'bg-warm-beige-light',
+      description: 'Prenatal care, pregnancy journey, and preparing for baby'
+    },
+    'Sleep': { 
+      icon: '😴', 
+      color: 'text-blue-600', 
+      bgColor: 'bg-blue-100',
+      description: 'Sleep training, bedtime routines, and solving sleep issues'
+    },
+    'Feeding': { 
+      icon: '🍼', 
+      color: 'text-sage-dark', 
+      bgColor: 'bg-sage-light',
+      description: 'Breastfeeding, formula feeding, weaning, and nutrition'
+    },
+    'Development': { 
+      icon: '🧸', 
+      color: 'text-purple-600', 
+      bgColor: 'bg-purple-100',
+      description: 'Milestones, growth tracking, and child development'
+    },
+    'Behavior': { 
+      icon: '🤝', 
+      color: 'text-teal-dark', 
+      bgColor: 'bg-teal-light',
+      description: 'Understanding behavior, tantrums, and social skills'
+    },
+    'Health': { 
+      icon: '❤️', 
+      color: 'text-red-600', 
+      bgColor: 'bg-red-100',
+      description: 'Medical concerns, vaccinations, and wellness'
+    },
+    'Activities': { 
+      icon: '🎨', 
+      color: 'text-pink-600', 
+      bgColor: 'bg-pink-100',
+      description: 'Play ideas, learning activities, and creative fun'
+    },
+    'Discipline': { 
+      icon: '⭐', 
+      color: 'text-yellow-600', 
+      bgColor: 'bg-yellow-100',
+      description: 'Positive parenting, setting boundaries, and managing behavior'
+    },
+    'School': { 
+      icon: '🎒', 
+      color: 'text-indigo-600', 
+      bgColor: 'bg-indigo-100',
+      description: 'Education, school readiness, and learning support'
+    },
+    'Newborns': { 
+      icon: '👶', 
+      color: 'text-warm-beige-dark', 
+      bgColor: 'bg-warm-beige-light',
+      description: '0-3 months care, newborn essentials, and early parenting'
+    },
+    'Toddlers': { 
+      icon: '🚼', 
+      color: 'text-sage-dark', 
+      bgColor: 'bg-sage-light',
+      description: '1-3 years parenting, toddler challenges, and development'
+    },
   }
 
   return (
-    <div className="min-h-screen bg-cream-light py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -58,9 +113,15 @@ export default async function TopicsPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {topics?.map((topic) => {
             const isFollowing = followedTopicIds.includes(topic.id)
+            const config = categoryConfig[topic.name] || { 
+              icon: '📌', 
+              color: 'text-gray-600', 
+              bgColor: 'bg-gray-100',
+              description: topic.description || 'Parenting discussions and advice'
+            }
             
             return (
               <Link
@@ -68,7 +129,7 @@ export default async function TopicsPage() {
                 href={`/topics/${topic.id}`}
                 className="group relative"
               >
-                <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1">
+                <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 p-6 border border-gray-100">
                   {/* Following Badge */}
                   {isFollowing && (
                     <div className="absolute top-4 right-4 z-10">
@@ -81,22 +142,18 @@ export default async function TopicsPage() {
                     </div>
                   )}
                   
-                  <div className="relative h-48">
-                    <Image
-                      src={categoryImages[topic.name] || '/images/placeholder.jpg'}
-                      alt={topic.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  {/* Emoji Icon */}
+                  <div className={`${config.bgColor} w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-sm`}>
+                    <span className="text-5xl">{config.icon}</span>
                   </div>
                   
-                  <div className="p-6">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                  {/* Topic Info */}
+                  <div className="text-center">
+                    <h2 className={`text-2xl font-bold mb-3 ${config.color} group-hover:underline`}>
                       {topic.name}
                     </h2>
-                    <p className="text-gray-600">
-                      {topic.description}
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      {config.description}
                     </p>
                   </div>
                 </div>
