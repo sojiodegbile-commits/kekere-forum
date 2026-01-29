@@ -2,7 +2,6 @@
 
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { cookies } from 'next/headers'
 
 export async function signUp(formData: FormData) {
   const supabase = await createServerSupabaseClient()
@@ -11,19 +10,7 @@ export async function signUp(formData: FormData) {
   const password = formData.get('password') as string
   const name = formData.get('name') as string
 
-  // Check if user already exists
-  const { data: existingUser } = await supabase
-    .from('users')
-    .select('id')
-    .eq('email', email)
-    .single()
-
-  if (existingUser) {
-    return { 
-      error: 'An account with this email already exists. Please log in instead.' 
-    }
-  }
-
+  // Try to sign up - Supabase will handle duplicate email check
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -36,6 +23,12 @@ export async function signUp(formData: FormData) {
   })
 
   if (error) {
+    // Check if it's a duplicate user error
+    if (error.message.includes('already registered') || error.message.includes('already been registered')) {
+      return { 
+        error: 'An account with this email already exists. Please log in instead.' 
+      }
+    }
     return { error: error.message }
   }
 
