@@ -1,8 +1,8 @@
 'use server'
 
-import { revalidatePath } from 'next/cache'
-import { redirect } from 'next/navigation'
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
 export async function signUp(formData: FormData) {
   const supabase = await createServerSupabaseClient()
@@ -10,31 +10,36 @@ export async function signUp(formData: FormData) {
   const email = formData.get('email') as string
   const password = formData.get('password') as string
   const name = formData.get('name') as string
-  
+
+  // Check if user already exists
+  const { data: existingUser } = await supabase
+    .from('users')
+    .select('id')
+    .eq('email', email)
+    .single()
+
+  if (existingUser) {
+    return { 
+      error: 'An account with this email already exists. Please log in instead.' 
+    }
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://mykekere.com'}/auth/callback`,
       data: {
-        name: name
-      }
-    }
+        name,
+      },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+    },
   })
-  
+
   if (error) {
     return { error: error.message }
   }
-  
-  // Check if email confirmation is required
-  if (data.user && !data.session) {
-    // Email confirmation required - user created but not logged in yet
-    return { success: true, emailSent: true }
-  }
-  
-  // User logged in successfully (Google OAuth or if confirmation is disabled)
-  revalidatePath('/', 'layout')
-  redirect('/')
+
+  return { success: true }
 }
 
 export async function signIn(formData: FormData) {
@@ -42,23 +47,21 @@ export async function signIn(formData: FormData) {
   
   const email = formData.get('email') as string
   const password = formData.get('password') as string
-  
-  const { error } = await supabase.auth.signInWithPassword({
+
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
-  
+
   if (error) {
     return { error: error.message }
   }
-  
-  revalidatePath('/', 'layout')
+
   redirect('/')
 }
 
 export async function signOut() {
   const supabase = await createServerSupabaseClient()
   await supabase.auth.signOut()
-  revalidatePath('/', 'layout')
   redirect('/')
 }
