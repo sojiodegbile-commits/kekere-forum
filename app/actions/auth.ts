@@ -10,6 +10,19 @@ export async function signUp(formData: FormData) {
   const password = formData.get('password') as string
   const name = formData.get('name') as string
 
+  // Check if user already exists in public.users table
+  const { data: existingUser, error: checkError } = await supabase
+    .from('users')
+    .select('email')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (existingUser) {
+    return { 
+      error: 'An account with this email already exists. Please log in instead.' 
+    }
+  }
+
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -22,11 +35,6 @@ export async function signUp(formData: FormData) {
   })
 
   if (error) {
-    if (error.message.includes('already registered') || error.message.includes('already been registered')) {
-      return { 
-        error: 'An account with this email already exists. Please log in instead.' 
-      }
-    }
     return { error: error.message }
   }
 
