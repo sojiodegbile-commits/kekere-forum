@@ -6,6 +6,8 @@ import { cookies } from 'next/headers'
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
+  const type = requestUrl.searchParams.get('type')
+  const next = requestUrl.searchParams.get('next') || '/'
 
   if (code) {
     const supabase = await createServerSupabaseClient()
@@ -16,6 +18,11 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error exchanging code for session:', error)
       return NextResponse.redirect(new URL('/login?error=confirmation_failed', requestUrl.origin))
+    }
+    
+    // Check if this is a password recovery flow
+    if (type === 'recovery' || requestUrl.pathname.includes('reset-password')) {
+      return NextResponse.redirect(new URL('/reset-password', requestUrl.origin))
     }
     
     // Create user profile if it doesn't exist
@@ -44,7 +51,7 @@ export async function GET(request: NextRequest) {
       }
     }
   }
-
-  // Redirect to home page after successful confirmation
-  return NextResponse.redirect(new URL('/', requestUrl.origin))
+  
+  // Redirect to home page or specified next URL after successful confirmation
+  return NextResponse.redirect(new URL(next, requestUrl.origin))
 }
