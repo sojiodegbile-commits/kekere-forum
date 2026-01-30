@@ -1,52 +1,38 @@
 import { createServerSupabaseClient } from '@/app/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)
-  
-  // Log all parameters to see what we're receiving
-  console.log('Reset password callback params:', Object.fromEntries(requestUrl.searchParams))
-  
-  const token_hash = requestUrl.searchParams.get('token_hash')
-  const token = requestUrl.searchParams.get('token')
-  const type = requestUrl.searchParams.get('type')
   const code = requestUrl.searchParams.get('code')
+  const token_hash = requestUrl.searchParams.get('token_hash')
+  const type = requestUrl.searchParams.get('type')
 
   const supabase = await createServerSupabaseClient()
 
-  // Try different token formats
+  // Try to exchange code for session (if code exists)
   if (code) {
-    // Handle authorization code
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error) {
-      return NextResponse.redirect(`${requestUrl.origin}/reset-password`)
+      // Successfully exchanged code - redirect to reset password page
+      return NextResponse.redirect(new URL('/reset-password', requestUrl.origin))
     }
-    console.error('Code exchange error:', error)
-  } else if (token_hash && type === 'recovery') {
-    // Handle token_hash
+  }
+
+  // Try to verify OTP token (if token_hash exists)
+  if (token_hash && type === 'recovery') {
     const { error } = await supabase.auth.verifyOtp({
       token_hash,
       type: 'recovery',
     })
     
     if (!error) {
-      return NextResponse.redirect(`${requestUrl.origin}/reset-password`)
+      // Successfully verified - redirect to reset password page
+      return NextResponse.redirect(new URL('/reset-password', requestUrl.origin))
     }
-    console.error('Token hash error:', error)
-  } else if (token && type === 'recovery') {
-    // Handle plain token
-    const { error } = await supabase.auth.verifyOtp({
-      token_hash: token,
-      type: 'recovery',
-    })
-    
-    if (!error) {
-      return NextResponse.redirect(`${requestUrl.origin}/reset-password`)
-    }
-    console.error('Token error:', error)
   }
 
-  // If all attempts fail, redirect to login with error
-  return NextResponse.redirect(`${requestUrl.origin}/login?error=Invalid or expired reset link`)
+  // If everything fails, redirect to login with error
+  return NextResponse.redirect(new URL('/login?error=Invalid reset link', requestUrl.origin))
 }
