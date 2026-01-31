@@ -44,7 +44,7 @@ export default function ChangePasswordPage() {
       setSuccess(true)
       setLoading(false)
       setTimeout(() => {
-        router.push('/profile')
+        router.push('/')
       }, 2000)
     }
   }
@@ -68,7 +68,7 @@ export default function ChangePasswordPage() {
 
           {success && (
             <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-green-600 text-sm">✅ Password updated successfully! Redirecting...</p>
+              <p className="text-green-600 text-sm">✅ Password updated successfully! Redirecting to homepage...</p>
             </div>
           )}
 
@@ -84,7 +84,8 @@ export default function ChangePasswordPage() {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sage focus:border-transparent"
+                disabled={success}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sage focus:border-transparent disabled:bg-gray-100"
                 placeholder="Enter new password"
               />
             </div>
@@ -100,7 +101,8 @@ export default function ChangePasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sage focus:border-transparent"
+                disabled={success}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sage focus:border-transparent disabled:bg-gray-100"
                 placeholder="Confirm new password"
               />
             </div>
