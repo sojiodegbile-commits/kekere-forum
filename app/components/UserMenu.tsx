@@ -18,6 +18,7 @@ interface UserMenuProps {
 
 export default function UserMenu({ user }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  
   const name = user.user_metadata?.name || 'User'
   const avatarUrl = user.user_metadata?.avatar_url || null
 
@@ -39,6 +40,7 @@ export default function UserMenu({ user }: UserMenuProps) {
             className="fixed inset-0 z-10"
             onClick={() => setIsOpen(false)}
           />
+          
           <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-20 border border-gray-200">
             <div className="px-4 py-3 border-b border-gray-200">
               <p className="text-sm font-semibold text-gray-900">{name}</p>
@@ -76,6 +78,17 @@ export default function UserMenu({ user }: UserMenuProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               Ask Question
+            </Link>
+
+            <Link
+              href="/profile/change-password"
+              className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100"
+              onClick={() => setIsOpen(false)}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+              Change Password
             </Link>
             
             <div className="border-t border-gray-200 my-2"></div>
